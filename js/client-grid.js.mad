@@ -1,0 +1,117 @@
+var Grid = [[], [], [], []];
+var KeysPressed = 0; // Bit 0: up. Bit 1: left. Bit 2: right.
+var Socket = null;
+var GridTimer = null;
+var GridFrameTime = 20;
+
+for (var i = 0; i < 4; i++) {
+            Grid[i] = new Array(4);
+        }
+		for (var i = 0; i < 4; i++) {
+		  for (var j = 0; j < 4; j++) {
+		    Grid[i][j] = "";
+		  }
+		}
+
+document.addEventListener("keyup",
+	function(E)
+	{
+	    /* this is for the case when we send only the cell which has been modified
+		var idElement = E.target.id;
+		var valueChanged = document.getElementById(idElement).value;
+		*/
+		var page = new Object();
+		var date = new Date();
+		page.Page = new Object();
+		page.Page.lastEdited = date.getTime();
+		var grid = new Array(4);
+        for (var i = 0; i < 4; i++) {
+            grid[i] = new Array(4);
+        }
+		for (var i = 0; i < 4; i++) {
+		  for (var j = 0; j < 4; j++) {
+		    grid[i][j] = document.getElementById(i + "" + j + "").innerHTML;
+		  }
+		}
+		page.Page.rows = grid;
+		// Send the grid to the server
+		if (Socket && Socket.readyState == 1)
+			Socket.send(JSON.stringify(page));
+	}
+);
+	
+window.addEventListener("load",
+	function()
+	{
+		/*var gridDiv = document.getElementById("container");
+		gridDiv.width = "100%";
+		gridDiv.margin = "0px auto";*/
+		
+		var Name = prompt("What is your username?", "Anonymous");
+		
+		try
+		{
+			if (typeof MozWebSocket !== "undefined")
+				Socket = new MozWebSocket("ws://localhost:9001");
+			else if (typeof WebSocket !== "undefined")
+				Socket = new WebSocket("ws://localhost:9001");
+			else
+			{
+				Socket = null;
+				alert("Your browser does not support websockets. We recommend that you use an up-to-date version of Google Chrome or Mozilla Firefox.");
+				return false;
+			}
+			var page = new Object();
+		}
+		catch (E) { Socket = null; return false; }
+
+		Socket.onerror = function(E) { alert("WebSocket error: " + JSON.stringify(E)); };
+
+		Socket.onclose = function (E)
+			{
+				// Shut down the game loop.
+				if (GridTimer) clearInterval(GridTimer);
+				GridTimer = null;
+			};
+
+		Socket.onopen = function()
+			{
+				// Send a handshake message.
+				Socket.send(JSON.stringify({ Type: "HI", Data: Name.substring(0, 10) }));
+				
+//				// Set up game loop.
+				/*GridTimer = setInterval(
+					function()
+					{
+						DrawGrid(Grid);
+					},
+					GridFrameTime);*/
+			};
+
+		Socket.onmessage = function(E)
+			{
+				var Message;
+
+				// Check that the message is in the format we expect.
+				try { Message = JSON.parse(E.data); }
+				catch (Err) { return; }
+				if (!("Page" in Message)) return;
+				var lastEdited = Message.Page.lastEdited;
+				// Overwrite our old Grid array with the new data sent from the server.
+				if (lastEdited != -1) {
+				  Grid = Message.Page.rows;
+                  DrawGrid(Grid);
+				}
+			};
+	}
+);
+	
+function DrawGrid(grid)
+{
+
+	for (var i = 0; i < 4; i++) {
+		for (var j = 0; j < 4; j++) {
+		    document.getElementById(i + "" + j + "").innerHTML = grid[i][j];
+		}
+	}
+}
