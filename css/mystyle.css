@@ -1,0 +1,74 @@
+.centered {
+    width: 940px;
+    margin-left: auto ;
+    margin-right: auto ;
+}
+
+.box {
+    width:200;
+    height:100px;
+    background:#FFF;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+    margin-top: 20px;
+}
+
+.effect6
+{
+    position:relative;
+    -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+    -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+    box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+}
+.effect6:before, .effect6:after
+{
+    content:"";
+    position:absolute;
+    z-index:-1;
+    top:50%;
+    bottom:0;
+    left:10px;
+    right:10px;
+    -moz-border-radius:100px / 10px;
+    border-radius:100px / 10px;
+}
+.effect6:after
+{
+    right:10px;
+    left:auto;
+    -webkit-transform:skew(8deg) rotate(3deg);
+    -moz-transform:skew(8deg) rotate(3deg);
+    -ms-transform:skew(8deg) rotate(3deg);
+    -o-transform:skew(8deg) rotate(3deg);
+    transform:skew(8deg) rotate(3deg);
+}
+
+body{
+    background:url('http://www.cssdeck.com/uploads/media/items/0/0Rs78ic.gif');
+    /*color:#888;*/
+    background-size: 100% 1.2em;
+    padding:0;
+    margin:0;
+    font: 72.5% 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.blocked {
+  background-color: pink; 
+  width: 200; 
+  height: 100; 
+  text-align: center; 
+  display: table-cell; 
+  vertical-align: middle; 
+  border: 1px solid black;
+}
+
+.boxblocked {
+    width:200;
+    height:100px;
+    background:#F6F;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+    margin-top: 20px;
+}
